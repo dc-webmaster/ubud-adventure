@@ -1,22 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-
-// Default content configuration (Fallback)
-const DEFAULT_CONTENT = {
-  adminPin: '1234', // Default Admin PIN
-  whatsappNumber: '6281353046942',
-  announcement: 'Special Rates! Choose Standalone Activities or Save Big with Combo Packages!',
-  heroTitle: 'Choose Single Activities or The Ultimate Combo Adventure!',
-  heroSubtitle: 'Looking for wild river rafting or an exhilarating off-road quad bike track? Book individual activities or join both in a full-day adventure combo through Ubud\'s jungles, waterfalls, and caves.',
-  prices: {
-    'Ayung River Rafting Only': 400000,
-    'Single ATV Ride Only': 650000,
-    'Tandem ATV Ride Only': 950000,
-    'Rafting + Single ATV Combo': 1100000,
-    'Rafting + Tandem ATV Combo': 1800000
-  }
-};
+import DEFAULT_CONTENT from './config/public-content';
 
 export default function App() {
   // Web content state management
@@ -43,6 +28,23 @@ export default function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
+  const sanitizeContentData = (data) => {
+    const safeData = {
+      ...DEFAULT_CONTENT,
+      ...data,
+      prices: {
+        ...DEFAULT_CONTENT.prices,
+        ...(data?.prices || {})
+      }
+    };
+
+    if (safeData.adminPin) {
+      delete safeData.adminPin;
+    }
+
+    return safeData;
+  };
+
   // Load saved content from localStorage on initial load
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -50,8 +52,9 @@ export default function App() {
         const savedData = localStorage.getItem('bali_adventure_content');
         if (savedData) {
           const parsed = JSON.parse(savedData);
-          setContent(parsed);
-          setEditForm(parsed);
+          const mergedContent = sanitizeContentData(parsed);
+          setContent(mergedContent);
+          setEditForm(mergedContent);
         }
       } catch (err) {
         console.error('Failed to load saved data:', err);
@@ -63,7 +66,7 @@ export default function App() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === 'true' || params.get('secret') === '1234') {
+      if (params.get('admin') === 'true') {
         setIsAdminVisible(true);
       }
 
@@ -123,13 +126,26 @@ export default function App() {
   };
 
   // Verify Admin PIN Access
-  const handleVerifyPin = () => {
-    const validPin = content.adminPin || '1234';
-    if (adminPin === validPin) {
-      setIsAuthenticated(true);
-      setPinError(false);
-      setEditForm(JSON.parse(JSON.stringify(content)));
-    } else {
+  const handleVerifyPin = async () => {
+    try {
+      const response = await fetch('/api/verify-pin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pin: adminPin })
+      });
+
+      if (response.ok) {
+        setIsAuthenticated(true);
+        setPinError(false);
+        setEditForm(JSON.parse(JSON.stringify(content)));
+        setAdminPin('');
+      } else {
+        setIsAuthenticated(false);
+        setPinError(true);
+      }
+    } catch (error) {
+      console.error('Admin PIN verification failed:', error);
+      setIsAuthenticated(false);
       setPinError(true);
     }
   };
@@ -835,20 +851,9 @@ export default function App() {
                   <h3 className="text-2xl font-extrabold text-slate-900 mt-1">Website Content Settings</h3>
                 </div>
 
-                {/* PIN Security Settings */}
                 <div className="space-y-3">
                   <h4 className="font-bold text-slate-900 text-sm border-l-4 border-amber-500 pl-2">Admin Panel Security</h4>
-                  <div>
-                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">New Admin PIN</label>
-                    <input 
-                      type="text" 
-                      value={editForm.adminPin || ''} 
-                      onChange={(e) => setEditForm({...editForm, adminPin: e.target.value})}
-                      placeholder="Enter new PIN (e.g., 5678)"
-                      className="w-full px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50/50 text-sm font-bold tracking-widest focus:ring-2 focus:ring-amber-500 focus:outline-none"
-                    />
-                    <span className="text-[11px] text-slate-400">Set a secret code/PIN that you can easily remember.</span>
-                  </div>
+                  <p className="text-sm text-slate-500">Admin PIN is verified on the server only and is not shipped to browser source or Inspect Element.</p>
                 </div>
 
                 <div className="space-y-3 pt-2">
