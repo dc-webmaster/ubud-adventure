@@ -80,6 +80,17 @@ export default function App() {
     }
   }, []);
 
+  // Smooth scroll helper function
+  const scrollToSection = (e, id) => {
+    e.preventDefault();
+    if (typeof window !== 'undefined') {
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  };
+
   // Format currency to IDR
   const formatIDR = (amount) => {
     return 'IDR ' + (amount || 0).toLocaleString('id-ID');
@@ -156,7 +167,7 @@ export default function App() {
       {/* NAVBAR */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-3">
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center gap-3 cursor-pointer">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/20">
               <i className="fa-solid fa-compass"></i>
             </div>
@@ -167,26 +178,26 @@ export default function App() {
           </a>
 
           <div className="hidden md:flex items-center space-x-8 font-semibold text-sm text-slate-600">
-            <a href="#overview" className="hover:text-emerald-600 transition-colors">Overview</a>
-            <a href="#highlights" className="hover:text-emerald-600 transition-colors">Highlights</a>
-            <a href="#packages" className="hover:text-emerald-600 transition-colors">Packages & Pricing</a>
-            <a href="#itinerary" className="hover:text-emerald-600 transition-colors">Itinerary</a>
-            <a href="#faq" className="hover:text-emerald-600 transition-colors">FAQ</a>
+            <a href="#overview" onClick={(e) => scrollToSection(e, 'overview')} className="hover:text-emerald-600 transition-colors cursor-pointer">Overview</a>
+            <a href="#highlights" onClick={(e) => scrollToSection(e, 'highlights')} className="hover:text-emerald-600 transition-colors cursor-pointer">Highlights</a>
+            <a href="#packages" onClick={(e) => scrollToSection(e, 'packages')} className="hover:text-emerald-600 transition-colors cursor-pointer">Packages & Pricing</a>
+            <a href="#itinerary" onClick={(e) => scrollToSection(e, 'itinerary')} className="hover:text-emerald-600 transition-colors cursor-pointer">Itinerary</a>
+            <a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="hover:text-emerald-600 transition-colors cursor-pointer">FAQ</a>
           </div>
 
           <div className="flex items-center gap-3">
             {isAdminVisible && (
               <button 
                 onClick={() => setIsAdminOpen(true)}
-                className="inline-flex items-center justify-center px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-amber-100 hover:bg-amber-200 transition-all border border-amber-300"
+                className="inline-flex items-center justify-center px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-amber-100 hover:bg-amber-200 transition-all border border-amber-300 cursor-pointer"
               >
                 <i className="fa-solid fa-gear mr-1.5 text-amber-700"></i> Admin CMS
               </button>
             )}
-            <a href="#packages" className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-md hover:shadow-emerald-600/30">
+            <a href="#packages" onClick={(e) => scrollToSection(e, 'packages')} className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-md hover:shadow-emerald-600/30 cursor-pointer">
               Book Now
             </a>
-            <a href={waUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors">
+            <a href={waUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors cursor-pointer">
               <i className="fa-brands fa-whatsapp text-lg"></i>
             </a>
           </div>
@@ -207,10 +218,10 @@ export default function App() {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="#packages" className="w-full sm:w-auto px-8 py-4 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-base transition-all transform hover:-translate-y-0.5 shadow-xl shadow-emerald-900/40 flex items-center justify-center gap-3">
+            <a href="#packages" onClick={(e) => scrollToSection(e, 'packages')} className="w-full sm:w-auto px-8 py-4 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-base transition-all transform hover:-translate-y-0.5 shadow-xl shadow-emerald-900/40 flex items-center justify-center gap-3 cursor-pointer">
               <i className="fa-solid fa-bolt"></i> View All Packages
             </a>
-            <a href="#overview" className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-base backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2">
+            <a href="#overview" onClick={(e) => scrollToSection(e, 'overview')} className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-base backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2 cursor-pointer">
               <i className="fa-solid fa-play text-xs"></i> Tour Overview
             </a>
           </div>
@@ -317,6 +328,61 @@ export default function App() {
         </div>
       </section>
 
+      {/* HIGHLIGHTS SECTION */}
+      <section id="highlights" className="py-20 bg-slate-100">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">What You Will Experience</span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Highlights of Your Adventure</h2>
+            <p className="text-slate-600 mt-4">Get ready for non-stop action across Bali's most beautiful natural landscapes.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200/80 hover:shadow-xl transition-all group">
+              <div className="w-14 h-14 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <i className="fa-solid fa-water-waves"></i>
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-3">Ayung River White Water Rafting</h3>
+              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                Navigate 10 km of thrilling rapids surrounded by rainforests, natural waterfalls, and historic Ramayana stone reliefs hand-carved along the river cliffs.
+              </p>
+              <ul className="text-xs text-slate-500 space-y-2">
+                <li className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-500"></i> Professional River Guide included</li>
+                <li className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-500"></i> Life jackets & helmets provided</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200/80 hover:shadow-xl transition-all group">
+              <div className="w-14 h-14 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <i className="fa-solid fa-hill-rockslide"></i>
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-3">Jungle & Muddy Quad Bike ATV</h3>
+              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                Ride powerful 250cc semi-automatic quad bikes across dense bamboo forests, river beds, rice paddies, mud tracks, and dark natural cave tunnels.
+              </p>
+              <ul className="text-xs text-slate-500 space-y-2">
+                <li className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-500"></i> Choice of Solo or Tandem ride</li>
+                <li className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-500"></i> Full safety briefing & practice loop</li>
+              </ul>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200/80 hover:shadow-xl transition-all group">
+              <div className="w-14 h-14 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl font-bold mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                <i className="fa-solid fa-utensils"></i>
+              </div>
+              <h3 className="text-xl font-extrabold text-slate-900 mb-3">Authentic Balinese Buffet Lunch</h3>
+              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                Refuel your energy after the activities with an all-you-can-eat buffet lunch served at our scenic open-air restaurant overlooking green rice field valleys.
+              </p>
+              <ul className="text-xs text-slate-500 space-y-2">
+                <li className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-500"></i> Fresh local food & mineral water</li>
+                <li className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-500"></i> Vegetarian options available</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* PRICING & PACKAGES SECTION */}
       <section id="packages" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
@@ -342,7 +408,7 @@ export default function App() {
                   <span className="text-slate-500 text-xs font-semibold"> / person</span>
                 </div>
               </div>
-              <button onClick={() => handleOpenBooking('Ayung River Rafting Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md">
+              <button onClick={() => handleOpenBooking('Ayung River Rafting Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md cursor-pointer">
                 Book Rafting Only
               </button>
             </div>
@@ -358,7 +424,7 @@ export default function App() {
                   <span className="text-slate-500 text-xs font-semibold"> / person</span>
                 </div>
               </div>
-              <button onClick={() => handleOpenBooking('Single ATV Ride Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md">
+              <button onClick={() => handleOpenBooking('Single ATV Ride Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md cursor-pointer">
                 Book Single ATV Only
               </button>
             </div>
@@ -374,7 +440,7 @@ export default function App() {
                   <span className="text-slate-500 text-xs font-semibold"> / 2 persons</span>
                 </div>
               </div>
-              <button onClick={() => handleOpenBooking('Tandem ATV Ride Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md">
+              <button onClick={() => handleOpenBooking('Tandem ATV Ride Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md cursor-pointer">
                 Book Tandem ATV Only
               </button>
             </div>
@@ -397,7 +463,7 @@ export default function App() {
                   <span className="text-slate-500 text-sm font-semibold"> / person</span>
                 </div>
               </div>
-              <button onClick={() => handleOpenBooking('Rafting + Single ATV Combo')} className="w-full py-4 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-extrabold transition-colors text-center shadow-lg">
+              <button onClick={() => handleOpenBooking('Rafting + Single ATV Combo')} className="w-full py-4 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-extrabold transition-colors text-center shadow-lg cursor-pointer">
                 Choose Single ATV Combo
               </button>
             </div>
@@ -413,11 +479,216 @@ export default function App() {
                   <span className="text-slate-500 text-sm font-semibold"> / 2 persons</span>
                 </div>
               </div>
-              <button onClick={() => handleOpenBooking('Rafting + Tandem ATV Combo')} className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold transition-colors text-center shadow-lg shadow-emerald-600/30">
+              <button onClick={() => handleOpenBooking('Rafting + Tandem ATV Combo')} className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold transition-colors text-center shadow-lg shadow-emerald-600/30 cursor-pointer">
                 Choose Tandem ATV Combo
               </button>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* ITINERARY & INCLUSIONS SECTION */}
+      <section id="itinerary" className="py-20 bg-slate-900 text-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12">
+            {/* Tour Itinerary Timeline */}
+            <div>
+              <span className="text-emerald-400 font-extrabold uppercase text-xs tracking-wider">Daily Schedule</span>
+              <h2 className="text-3xl font-extrabold mt-2 mb-8">Tour Itinerary Timeline</h2>
+
+              <div className="space-y-6 relative border-l-2 border-slate-700 ml-4 pl-6">
+                <div className="relative">
+                  <div className="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-slate-900"></div>
+                  <span className="text-xs font-bold text-emerald-400">08:00 AM - 08:30 AM</span>
+                  <h3 className="text-lg font-bold text-white mt-1">Hotel Pickup</h3>
+                  <p className="text-slate-400 text-sm mt-1">Private driver picks you up from your hotel in an air-conditioned vehicle (Kuta, Seminyak, Canggu, Ubud, Sanur, Nusa Dua).</p>
+                </div>
+                <div className="relative">
+                  <div className="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-slate-900"></div>
+                  <span className="text-xs font-bold text-emerald-400">09:30 AM</span>
+                  <h3 className="text-lg font-bold text-white mt-1">Morning Activity (Rafting / ATV)</h3>
+                  <p className="text-slate-400 text-sm mt-1">Welcome drink on arrival, gear setup, safety briefing, and start your morning activity.</p>
+                </div>
+                <div className="relative">
+                  <div className="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-slate-900"></div>
+                  <span className="text-xs font-bold text-emerald-400">12:15 PM</span>
+                  <h3 className="text-lg font-bold text-white mt-1">Shower & Indonesian Buffet Lunch</h3>
+                  <p className="text-slate-400 text-sm mt-1">Clean up using shower facilities, and enjoy a delicious fresh Indonesian buffet lunch.</p>
+                </div>
+                <div className="relative">
+                  <div className="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-slate-900"></div>
+                  <span className="text-xs font-bold text-emerald-400">01:30 PM</span>
+                  <h3 className="text-lg font-bold text-white mt-1">Afternoon Activity (For Combo Guests)</h3>
+                  <p className="text-slate-400 text-sm mt-1">Transfer to the ATV base camp or rafting point to complete your second adventure.</p>
+                </div>
+                <div className="relative">
+                  <div className="absolute -left-[31px] top-0 w-4 h-4 rounded-full bg-emerald-500 ring-4 ring-slate-900"></div>
+                  <span className="text-xs font-bold text-emerald-400">04:00 PM - 05:00 PM</span>
+                  <h3 className="text-lg font-bold text-white mt-1">Return Transfer to Hotel</h3>
+                  <p className="text-slate-400 text-sm mt-1">Shower, change clothes, and relax as our private driver safely takes you back to your hotel.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Inclusions & What to Bring */}
+            <div className="space-y-8">
+              <div className="bg-slate-800/80 p-8 rounded-2xl border border-slate-700">
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-3 text-emerald-400">
+                  <i className="fa-solid fa-square-check"></i> What's Included in Package
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-3 text-sm text-slate-300">
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Private AC Hotel Transfer</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> English Speaking Driver</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Rafting / ATV Activity</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Professional Instructors</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Safety Equipment & Boots</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Towels, Lockers & Showers</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Buffet Lunch & Water</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-check text-emerald-400"></i> Full Emergency Insurance</div>
+                </div>
+              </div>
+
+              <div className="bg-slate-800/80 p-8 rounded-2xl border border-slate-700">
+                <h3 className="text-xl font-bold mb-4 flex items-center gap-3 text-amber-400">
+                  <i className="fa-solid fa-suitcase"></i> What You Should Bring
+                </h3>
+                <div className="grid sm:grid-cols-2 gap-3 text-sm text-slate-300">
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-angle-right text-amber-400"></i> Change of Dry Clothes</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-angle-right text-amber-400"></i> Sunscreen & Sunglasses</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-angle-right text-amber-400"></i> Waterproof Camera / GoPro</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-angle-right text-amber-400"></i> Sandals or Water Shoes</div>
+                  <div className="flex items-center gap-2"><i className="fa-solid fa-angle-right text-amber-400"></i> Extra Cash for Drinks/Photos</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS SECTION */}
+      <section className="py-20 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">Guest Reviews</span>
+            <h2 className="text-3xl font-extrabold text-slate-900 mt-2">What Adventure Seekers Say</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <div className="flex text-amber-400 mb-3 text-sm">
+                <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
+              </div>
+              <p className="text-slate-600 text-sm leading-relaxed mb-6 italic">
+                "Unbelievable experience! The rafting on Ayung River was breathtaking with hidden waterfalls, and the ATV quad bike ride went through mud and a huge gorilla cave. Best day in Bali!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700">
+                  JD
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-slate-900">John & Emma D.</div>
+                  <div className="text-xs text-slate-500">Australia</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <div className="flex text-amber-400 mb-3 text-sm">
+                <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
+              </div>
+              <p className="text-slate-600 text-sm leading-relaxed mb-6 italic">
+                "Everything was smooth from the hotel pickup to the guides. Special thanks to our driver Wayan who was super friendly. The Indonesian lunch was delicious as well!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700">
+                  MK
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-slate-900">Michael K.</div>
+                  <div className="text-xs text-slate-500">Germany</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+              <div className="flex text-amber-400 mb-3 text-sm">
+                <i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i><i className="fa-solid fa-star"></i>
+              </div>
+              <p className="text-slate-600 text-sm leading-relaxed mb-6 italic">
+                "Great value for money! Booking direct was cheaper than getting it through local street vendors. The quad biking was super fun and full of adrenaline."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center font-bold text-slate-700">
+                  SL
+                </div>
+                <div>
+                  <div className="font-bold text-sm text-slate-900">Sarah L.</div>
+                  <div className="text-xs text-slate-500">Singapore</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ SECTION */}
+      <section id="faq" className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-12">
+          <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">Got Questions?</span>
+          <h2 className="text-3xl font-extrabold text-slate-900 mt-2">Frequently Asked Questions</h2>
+        </div>
+
+        <div className="space-y-4">
+          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
+              Can I book Rafting or ATV Biking as a single activity?
+              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
+            </summary>
+            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
+              Yes! You can choose to book only Ayung River Rafting or only ATV Quad Biking. Both standalone options still include private hotel transfer, equipment, guides, shower facilities, and buffet lunch.
+            </p>
+          </details>
+
+          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
+              Is this tour safe for beginners or children?
+              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
+            </summary>
+            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
+              Yes! Both Ayung River Rafting (Grade II-III) and the ATV Quad Bike track are beginner-friendly. Professional instructors lead each activity, and complete safety equipment is provided. Children aged 6 and above can participate (tandem ATV riding with adults).
+            </p>
+          </details>
+
+          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
+              Which hotel areas are covered for free pickup?
+              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
+            </summary>
+            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
+              We offer private air-conditioned hotel transport from Ubud, Kuta, Legian, Seminyak, Canggu, Sanur, Jimbaran, Nusa Dua, and Denpasar.
+            </p>
+          </details>
+
+          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
+              What is the difference between Single and Tandem ATV?
+              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
+            </summary>
+            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
+              <strong>Single ATV:</strong> 1 Quad bike driven by 1 person.<br />
+              <strong>Tandem ATV:</strong> 1 Quad bike shared by 2 persons (1 rider + 1 passenger). Perfect for couples or parents riding with kids!
+            </p>
+          </details>
+
+          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
+            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
+              How do I pay for my reservation?
+              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
+            </summary>
+            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
+              You can pay in cash (IDR or USD) directly to our driver on the day of the tour, or complete online payment via WhatsApp booking confirmation. No upfront cancellation penalty!
+            </p>
+          </details>
         </div>
       </section>
 
@@ -430,11 +701,11 @@ export default function App() {
           </div>
           <div className="flex gap-4">
             {isAdminVisible && (
-              <button onClick={() => setIsAdminOpen(true)} className="px-5 py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm border border-slate-700 transition-all">
+              <button onClick={() => setIsAdminOpen(true)} className="px-5 py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm border border-slate-700 transition-all cursor-pointer">
                 <i className="fa-solid fa-sliders mr-2 text-amber-400"></i> Admin Panel
               </button>
             )}
-            <a href="#packages" className="px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-all shadow-lg">
+            <a href="#packages" onClick={(e) => scrollToSection(e, 'packages')} className="px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-all shadow-lg cursor-pointer">
               Book Online Now
             </a>
           </div>
@@ -445,7 +716,7 @@ export default function App() {
       {isBookingOpen && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl">
-            <button onClick={() => setIsBookingOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+            <button onClick={() => setIsBookingOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 cursor-pointer">
               <i className="fa-solid fa-xmark text-xl"></i>
             </button>
             <h3 className="text-2xl font-extrabold text-slate-900 mb-1">Booking Form</h3>
@@ -457,7 +728,7 @@ export default function App() {
                 <select 
                   value={selectedPackage} 
                   onChange={(e) => setSelectedPackage(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
                 >
                   {Object.keys(content.prices).map((pkg) => (
                     <option key={pkg} value={pkg}>{pkg}</option>
@@ -482,7 +753,7 @@ export default function App() {
                     type="date" required 
                     value={bookingForm.date} 
                     onChange={(e) => setBookingForm({...bookingForm, date: e.target.value})}
-                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none cursor-pointer"
                   />
                 </div>
                 <div>
@@ -521,7 +792,7 @@ export default function App() {
                 <span className="text-lg text-emerald-600">{formatIDR((content.prices[selectedPackage] || 1100000) * bookingForm.qty)}</span>
               </div>
 
-              <button type="submit" className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base transition-colors shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
+              <button type="submit" className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base transition-colors shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer">
                 <i className="fa-brands fa-whatsapp text-lg"></i> Confirm Booking via WhatsApp
               </button>
             </form>
@@ -533,7 +804,7 @@ export default function App() {
       {isAdminOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
-            <button onClick={() => setIsAdminOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
+            <button onClick={() => setIsAdminOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600 cursor-pointer">
               <i className="fa-solid fa-xmark text-xl"></i>
             </button>
 
@@ -551,7 +822,7 @@ export default function App() {
                     onChange={(e) => setAdminPin(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-slate-300 text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
-                  <button onClick={handleVerifyPin} className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-lg">
+                  <button onClick={handleVerifyPin} className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-lg cursor-pointer">
                     Unlock Content Panel
                   </button>
                   {pinError && <p className="text-red-500 text-xs font-bold">Incorrect PIN! Please try again.</p>}
@@ -646,10 +917,10 @@ export default function App() {
                 )}
 
                 <div className="flex gap-3 pt-4">
-                  <button type="button" onClick={() => setIsAdminOpen(false)} className="w-1/2 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm">
+                  <button type="button" onClick={() => setIsAdminOpen(false)} className="w-1/2 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm cursor-pointer">
                     Cancel
                   </button>
-                  <button type="submit" disabled={isSaving} className="w-1/2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg">
+                  <button type="submit" disabled={isSaving} className="w-1/2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg cursor-pointer">
                     {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
@@ -660,7 +931,7 @@ export default function App() {
       )}
 
       {/* FLOATING WHATSAPP BUTTON */}
-      <a href={waUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-40 bg-emerald-500 text-white p-4 rounded-full shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all flex items-center justify-center group">
+      <a href={waUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 z-40 bg-emerald-500 text-white p-4 rounded-full shadow-2xl hover:bg-emerald-600 hover:scale-110 transition-all flex items-center justify-center group cursor-pointer">
         <i className="fa-brands fa-whatsapp text-3xl"></i>
       </a>
 
