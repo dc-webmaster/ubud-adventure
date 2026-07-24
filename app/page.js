@@ -45,20 +45,21 @@ export default function App() {
     return safeData;
   };
 
-  // Load saved content from localStorage on initial load
+  // Load saved content from shared server storage
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      try {
-        const savedData = localStorage.getItem('bali_adventure_content');
-        if (savedData) {
-          const parsed = JSON.parse(savedData);
-          const mergedContent = sanitizeContentData(parsed);
-          setContent(mergedContent);
-          setEditForm(mergedContent);
-        }
-      } catch (err) {
-        console.error('Failed to load saved data:', err);
-      }
+      fetch('/api/content')
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => {
+          if (data) {
+            const mergedContent = sanitizeContentData(data);
+            setContent(mergedContent);
+            setEditForm(mergedContent);
+          }
+        })
+        .catch((err) => {
+          console.error('Failed to load shared content:', err);
+        });
     }
   }, []);
 
@@ -150,16 +151,33 @@ export default function App() {
     }
   };
 
-  // Save Content Changes Permanently (localStorage)
-  const handleSaveContent = (e) => {
+  // Save Content Changes Permanently to shared server storage
+  const handleSaveContent = async (e) => {
     e.preventDefault();
     setIsSaving(true);
 
     try {
-      setContent(editForm);
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('bali_adventure_content', JSON.stringify(editForm));
+      const savePayload = {
+        whatsappNumber: editForm.whatsappNumber,
+        announcement: editForm.announcement,
+        heroTitle: editForm.heroTitle,
+        heroSubtitle: editForm.heroSubtitle,
+        prices: editForm.prices
+      };
+
+      const response = await fetch('/api/content', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(savePayload)
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save shared content');
       }
+
+      const updatedContent = await response.json();
+      setContent(sanitizeContentData(updatedContent));
+      setEditForm(sanitizeContentData(updatedContent));
       setIsSaving(false);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
