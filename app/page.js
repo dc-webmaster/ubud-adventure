@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 
-// Konten standar awal (Fallback)
+// Default content configuration (Fallback)
 const DEFAULT_CONTENT = {
-  adminPin: '1234', // PIN Default Admin
+  adminPin: '1234', // Default Admin PIN
   whatsappNumber: '6281353046942',
   announcement: 'Special Rates! Choose Standalone Activities or Save Big with Combo Packages!',
   heroTitle: 'Choose Single Activities or The Ultimate Combo Adventure!',
@@ -19,11 +19,11 @@ const DEFAULT_CONTENT = {
 };
 
 export default function App() {
-  // State manajemen konten web
+  // Web content state management
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [isAdminVisible, setIsAdminVisible] = useState(false);
   
-  // State Modal Booking
+  // Booking Modal State
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Rafting + Single ATV Combo');
   const [bookingForm, setBookingForm] = useState({
@@ -34,7 +34,7 @@ export default function App() {
     phone: ''
   });
 
-  // State Modal Admin CMS
+  // Admin CMS Modal State
   const [isAdminOpen, setIsAdminOpen] = useState(false);
   const [adminPin, setAdminPin] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -43,7 +43,7 @@ export default function App() {
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
 
-  // Memuat data tersimpan dari localStorage saat halaman pertama kali dibuka
+  // Load saved content from localStorage on initial load
   useEffect(() => {
     if (typeof window !== 'undefined') {
       try {
@@ -54,12 +54,12 @@ export default function App() {
           setEditForm(parsed);
         }
       } catch (err) {
-        console.error('Gagal memuat data tersimpan:', err);
+        console.error('Failed to load saved data:', err);
       }
     }
   }, []);
 
-  // Deteksi Tombol Admin Rahasia via URL (?admin=true) atau Shortcut Keyboard (Ctrl+Shift+A)
+  // Secret Admin Trigger via URL parameter (?admin=true) or Keyboard Shortcut (Ctrl+Shift+A)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -80,38 +80,38 @@ export default function App() {
     }
   }, []);
 
-  // Format Angka ke IDR
+  // Format currency to IDR
   const formatIDR = (amount) => {
     return 'IDR ' + (amount || 0).toLocaleString('id-ID');
   };
 
-  // Buka Modal Pemesanan
+  // Open Booking Modal
   const handleOpenBooking = (packageName) => {
     if (packageName) setSelectedPackage(packageName);
     setIsBookingOpen(true);
   };
 
-  // Kirim Pemesanan ke WhatsApp
+  // Submit Booking to WhatsApp
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     const unitPrice = content.prices[selectedPackage] || 1100000;
     const totalPrice = (unitPrice * bookingForm.qty).toLocaleString('id-ID');
 
-    const message = `Halo Bali Adventure! Saya ingin memesan paket:%0A%0A` +
-      `*Paket:* ${selectedPackage}%0A` +
-      `*Nama:* ${bookingForm.name}%0A` +
-      `*Tanggal Tur:* ${bookingForm.date}%0A` +
-      `*Jumlah:* ${bookingForm.qty}%0A` +
-      `*Penjemputan Hotel:* ${bookingForm.hotel}%0A` +
-      `*WhatsApp Tamu:* ${bookingForm.phone}%0A` +
-      `*Total Estimasi:* IDR ${totalPrice}%0A%0A` +
-      `Mohon konfirmasi ketersediaan. Terima kasih!`;
+    const message = `Hello Bali Adventure! I would like to book a package:%0A%0A` +
+      `*Package:* ${selectedPackage}%0A` +
+      `*Name:* ${bookingForm.name}%0A` +
+      `*Tour Date:* ${bookingForm.date}%0A` +
+      `*Quantity:* ${bookingForm.qty}%0A` +
+      `*Hotel Pickup:* ${bookingForm.hotel}%0A` +
+      `*Guest WhatsApp:* ${bookingForm.phone}%0A` +
+      `*Estimated Total:* IDR ${totalPrice}%0A%0A` +
+      `Please confirm availability. Thank you!`;
 
     window.open(`https://wa.me/${content.whatsappNumber}?text=${message}`, '_blank');
     setIsBookingOpen(false);
   };
 
-  // Verifikasi PIN Akses Admin
+  // Verify Admin PIN Access
   const handleVerifyPin = () => {
     const validPin = content.adminPin || '1234';
     if (adminPin === validPin) {
@@ -123,7 +123,7 @@ export default function App() {
     }
   };
 
-  // Menyimpan Perubahan Konten secara Permanen (Local Storage)
+  // Save Content Changes Permanently (localStorage)
   const handleSaveContent = (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -137,17 +137,17 @@ export default function App() {
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
-      console.error('Gagal menyimpan perubahan:', error);
+      console.error('Failed to save changes:', error);
       setIsSaving(false);
     }
   };
 
-  const waUrl = `https://wa.me/${content.whatsappNumber}?text=Halo%20Bali%20Adventure!%20Saya%20ingin%20bertanya%20mengenai%20paket%20tur.`;
+  const waUrl = `https://wa.me/${content.whatsappNumber}?text=Hello%20Bali%20Adventure!%20I%20have%20an%20inquiry%20regarding%20your%20tour%20packages.`;
 
   return (
     <div className="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-emerald-500 selection:text-white min-h-screen">
       
-      {/* BANNER PENGUMUMAN ATAS */}
+      {/* TOP ANNOUNCEMENT BANNER */}
       <div className="bg-emerald-600 text-white text-xs md:text-sm py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
         <i className="fa-solid fa-fire text-yellow-300"></i> 
         <span>{content.announcement}</span>
@@ -167,10 +167,10 @@ export default function App() {
           </a>
 
           <div className="hidden md:flex items-center space-x-8 font-semibold text-sm text-slate-600">
-            <a href="#overview" className="hover:text-emerald-600 transition-colors">Ringkasan</a>
-            <a href="#highlights" className="hover:text-emerald-600 transition-colors">Keunggulan</a>
-            <a href="#packages" className="hover:text-emerald-600 transition-colors">Paket & Harga</a>
-            <a href="#itinerary" className="hover:text-emerald-600 transition-colors">Jadwal</a>
+            <a href="#overview" className="hover:text-emerald-600 transition-colors">Overview</a>
+            <a href="#highlights" className="hover:text-emerald-600 transition-colors">Highlights</a>
+            <a href="#packages" className="hover:text-emerald-600 transition-colors">Packages & Pricing</a>
+            <a href="#itinerary" className="hover:text-emerald-600 transition-colors">Itinerary</a>
             <a href="#faq" className="hover:text-emerald-600 transition-colors">FAQ</a>
           </div>
 
@@ -184,7 +184,7 @@ export default function App() {
               </button>
             )}
             <a href="#packages" className="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-full text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-all shadow-md hover:shadow-emerald-600/30">
-              Pesan Sekarang
+              Book Now
             </a>
             <a href={waUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors">
               <i className="fa-brands fa-whatsapp text-lg"></i>
@@ -197,7 +197,7 @@ export default function App() {
       <header className="relative bg-slate-900 text-white py-24 md:py-36 px-4 sm:px-6 lg:px-8 overflow-hidden bg-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1920&auto=format&fit=crop')" }}>
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-emerald-300 border border-white/20 text-xs md:text-sm font-semibold uppercase tracking-wider mb-6">
-            <i className="fa-solid fa-star text-amber-400"></i> Operator Petualangan #1 di Ubud
+            <i className="fa-solid fa-star text-amber-400"></i> #1 Outdoor Adventure Operator in Ubud
           </span>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight mb-6">
             {content.heroTitle}
@@ -208,10 +208,10 @@ export default function App() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a href="#packages" className="w-full sm:w-auto px-8 py-4 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-extrabold text-base transition-all transform hover:-translate-y-0.5 shadow-xl shadow-emerald-900/40 flex items-center justify-center gap-3">
-              <i className="fa-solid fa-bolt"></i> Lihat Semua Paket
+              <i className="fa-solid fa-bolt"></i> View All Packages
             </a>
             <a href="#overview" className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-base backdrop-blur-md border border-white/20 transition-all flex items-center justify-center gap-2">
-              <i className="fa-solid fa-play text-xs"></i> Ringkasan Tur
+              <i className="fa-solid fa-play text-xs"></i> Tour Overview
             </a>
           </div>
 
@@ -221,8 +221,8 @@ export default function App() {
                 <i className="fa-solid fa-water"></i>
               </div>
               <div>
-                <div className="text-sm font-bold">Sungai Ayung</div>
-                <div className="text-xs text-slate-300">Tersedia Paket Rafting</div>
+                <div className="text-sm font-bold">Ayung River</div>
+                <div className="text-xs text-slate-300">Rafting Packages Available</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -230,8 +230,8 @@ export default function App() {
                 <i className="fa-solid fa-motorcycle"></i>
               </div>
               <div>
-                <div className="text-sm font-bold">ATV 250cc</div>
-                <div className="text-xs text-slate-300">Tersedia Paket Quad Bike</div>
+                <div className="text-sm font-bold">250cc ATV Quad Bike</div>
+                <div className="text-xs text-slate-300">Off-Road Tracks</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -239,8 +239,8 @@ export default function App() {
                 <i className="fa-solid fa-utensils"></i>
               </div>
               <div>
-                <div className="text-sm font-bold">Makan Siang Prasmanan</div>
-                <div className="text-xs text-slate-300">Termasuk di Semua Paket</div>
+                <div className="text-sm font-bold">Buffet Lunch</div>
+                <div className="text-xs text-slate-300">Included in All Packages</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -248,8 +248,8 @@ export default function App() {
                 <i className="fa-solid fa-car"></i>
               </div>
               <div>
-                <div className="text-sm font-bold">Antar Jemput Privat</div>
-                <div className="text-xs text-slate-300">Langsung dari Hotel</div>
+                <div className="text-sm font-bold">Private Transfer</div>
+                <div className="text-xs text-slate-300">Direct Hotel Pickup</div>
               </div>
             </div>
           </div>
@@ -260,12 +260,12 @@ export default function App() {
       <section id="overview" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div>
-            <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">Pilihan Tur Fleksibel</span>
+            <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">Flexible Tour Options</span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2 mb-6 leading-tight">
-              Petualangan yang Disesuaikan untuk Setiap Wisatawan
+              Tailored Adventures for Every Traveler
             </h2>
             <p className="text-slate-600 mb-6 leading-relaxed">
-              Apakah Anda memiliki waktu terbatas dan hanya ingin satu aktivitas atau ingin menikmati petualangan seharian penuh, kami menyediakan paket fleksibel yang dirancang sesuai jadwal dan anggaran Anda.
+              Whether you have limited time and want a single activity or wish to experience a full day of excitement, we offer flexible packages designed to suit your schedule and budget.
             </p>
             <div className="space-y-4 mb-8">
               <div className="flex items-start gap-4">
@@ -273,8 +273,8 @@ export default function App() {
                   <i className="fa-solid fa-check text-sm"></i>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Aktivitas Tunggal atau Kombinasi Seharian</h3>
-                  <p className="text-slate-600 text-sm">Pesan Rafting saja, ATV saja, atau gabungkan keduanya dalam satu hari seru.</p>
+                  <h3 className="font-bold text-slate-900">Single Activity or Full-Day Combo</h3>
+                  <p className="text-slate-600 text-sm">Book Rafting only, ATV only, or combine both for an action-packed day.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -282,8 +282,8 @@ export default function App() {
                   <i className="fa-solid fa-check text-sm"></i>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Pemandu Bersertifikat & Aman</h3>
-                  <p className="text-slate-600 text-sm">Perlengkapan standar internasional, instruktur profesional, dan asuransi keselamatan penuh.</p>
+                  <h3 className="font-bold text-slate-900">Certified & Safety-First Guides</h3>
+                  <p className="text-slate-600 text-sm">International standard safety gear, professional instructors, and full insurance coverage.</p>
                 </div>
               </div>
               <div className="flex items-start gap-4">
@@ -291,8 +291,8 @@ export default function App() {
                   <i className="fa-solid fa-check text-sm"></i>
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Fasilitas Basecamp Lengkap</h3>
-                  <p className="text-slate-600 text-sm">Kamar mandi bersih, ruang ganti, handuk, loker aman, dan makan siang sudah termasuk.</p>
+                  <h3 className="font-bold text-slate-900">Complete Basecamp Facilities</h3>
+                  <p className="text-slate-600 text-sm">Clean showers, changing rooms, towels, secure lockers, and buffet lunch included.</p>
                 </div>
               </div>
             </div>
@@ -300,18 +300,18 @@ export default function App() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <img src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=800&auto=format&fit=crop" alt="Rafting Sungai Ayung" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
+              <img src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=800&auto=format&fit=crop" alt="Ayung River Rafting" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
               <div className="bg-emerald-600 text-white p-6 rounded-2xl shadow-lg">
                 <div className="text-3xl font-extrabold mb-1">10+ km</div>
-                <div className="text-emerald-100 text-sm font-medium">Lintasan Sungai & Relief Tebing Indah</div>
+                <div className="text-emerald-100 text-sm font-medium">River Trail & Scenic Cliff Carvings</div>
               </div>
             </div>
             <div className="space-y-4 pt-8">
               <div className="bg-slate-900 text-white p-6 rounded-2xl shadow-lg">
-                <div className="text-3xl font-extrabold mb-1">2 Jam</div>
-                <div className="text-slate-300 text-sm font-medium">Trek ATV Off-road dengan Gua & Lumpur</div>
+                <div className="text-3xl font-extrabold mb-1">2 Hours</div>
+                <div className="text-slate-300 text-sm font-medium">Off-Road ATV Track with Caves & Mud</div>
               </div>
-              <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800&auto=format&fit=crop" alt="Petualangan ATV Ubud" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
+              <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800&auto=format&fit=crop" alt="Ubud ATV Quad Biking" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
             </div>
           </div>
         </div>
@@ -320,101 +320,101 @@ export default function App() {
       {/* PRICING & PACKAGES SECTION */}
       <section id="packages" className="py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">Harga Transparan</span>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Pilihan Paket & Harga</h2>
-          <p className="text-slate-600 mt-4">Pilih satu aktivitas atau gabungkan untuk hemat lebih banyak. Semua pilihan sudah termasuk makan siang dan penjemputan!</p>
+          <span className="text-emerald-600 font-extrabold uppercase text-xs tracking-wider">Transparent Pricing</span>
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-2">Packages & Pricing Options</h2>
+          <p className="text-slate-600 mt-4">Choose a single activity or combine them to save more. All options include lunch and hotel pickup!</p>
         </div>
 
-        {/* PAKET AKTIVITAS TUNGGAL */}
+        {/* SINGLE ACTIVITY PACKAGES */}
         <div className="mb-12">
           <h3 className="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-2">
-            <i className="fa-solid fa-bullseye text-emerald-600"></i> Paket Aktivitas Tunggal
+            <i className="fa-solid fa-bullseye text-emerald-600"></i> Single Activity Packages
           </h3>
           <div className="grid md:grid-cols-3 gap-6">
-            {/* Rafting Saja */}
+            {/* Rafting Only */}
             <div className="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm hover:border-emerald-500 transition-all flex flex-col justify-between">
               <div>
-                <div className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3">Aktivitas Air</div>
+                <div className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-bold uppercase tracking-wider mb-3">Water Activity</div>
                 <h4 className="text-xl font-extrabold text-slate-900">Ayung River Rafting Only</h4>
-                <p className="text-slate-500 text-xs mt-1 mb-4">2 Jam petualangan arung jeram di Sungai Ayung.</p>
+                <p className="text-slate-500 text-xs mt-1 mb-4">2 Hours white water rafting adventure down the Ayung River.</p>
                 <div className="mb-6">
                   <span className="text-3xl font-black text-slate-900">{formatIDR(content.prices['Ayung River Rafting Only'])}</span>
-                  <span className="text-slate-500 text-xs font-semibold">/ orang</span>
+                  <span className="text-slate-500 text-xs font-semibold"> / person</span>
                 </div>
               </div>
               <button onClick={() => handleOpenBooking('Ayung River Rafting Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md">
-                Pesan Rafting Saja
+                Book Rafting Only
               </button>
             </div>
 
-            {/* Single ATV Saja */}
+            {/* Single ATV Only */}
             <div className="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm hover:border-emerald-500 transition-all flex flex-col justify-between">
               <div>
-                <div className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider mb-3">Off-Road Solo</div>
+                <div className="inline-block px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider mb-3">Solo Off-Road</div>
                 <h4 className="text-xl font-extrabold text-slate-900">Single ATV Ride Only</h4>
-                <p className="text-slate-500 text-xs mt-1 mb-4">1 Orang mengendarai 1 Quad Bike di trek hutan & gua.</p>
+                <p className="text-slate-500 text-xs mt-1 mb-4">1 Rider driving 1 Quad Bike through jungle tracks & caves.</p>
                 <div className="mb-6">
                   <span className="text-3xl font-black text-slate-900">{formatIDR(content.prices['Single ATV Ride Only'])}</span>
-                  <span className="text-slate-500 text-xs font-semibold">/ orang</span>
+                  <span className="text-slate-500 text-xs font-semibold"> / person</span>
                 </div>
               </div>
               <button onClick={() => handleOpenBooking('Single ATV Ride Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md">
-                Pesan Single ATV Saja
+                Book Single ATV Only
               </button>
             </div>
 
-            {/* Tandem ATV Saja */}
+            {/* Tandem ATV Only */}
             <div className="bg-white rounded-3xl p-6 border-2 border-slate-200 shadow-sm hover:border-emerald-500 transition-all flex flex-col justify-between">
               <div>
-                <div className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-bold uppercase tracking-wider mb-3">Off-Road Berdua</div>
+                <div className="inline-block px-3 py-1 rounded-full bg-teal-100 text-teal-800 text-xs font-bold uppercase tracking-wider mb-3">Tandem Off-Road</div>
                 <h4 className="text-xl font-extrabold text-slate-900">Tandem ATV Ride Only</h4>
-                <p className="text-slate-500 text-xs mt-1 mb-4">2 Orang naik bersama dalam 1 Quad Bike.</p>
+                <p className="text-slate-500 text-xs mt-1 mb-4">2 Guests riding together on 1 Quad Bike.</p>
                 <div className="mb-6">
                   <span className="text-3xl font-black text-slate-900">{formatIDR(content.prices['Tandem ATV Ride Only'])}</span>
-                  <span className="text-slate-500 text-xs font-semibold">/ 2 orang</span>
+                  <span className="text-slate-500 text-xs font-semibold"> / 2 persons</span>
                 </div>
               </div>
               <button onClick={() => handleOpenBooking('Tandem ATV Ride Only')} className="w-full py-3 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-bold text-sm transition-colors text-center shadow-md">
-                Pesan Tandem ATV Saja
+                Book Tandem ATV Only
               </button>
             </div>
           </div>
         </div>
 
-        {/* PAKET KOMBO */}
+        {/* COMBO PACKAGES */}
         <div>
           <h3 className="text-xl font-extrabold text-slate-900 mb-6 flex items-center gap-2">
-            <i className="fa-solid fa-bolt text-amber-500"></i> Paket Kombinasi (Hemat Terbaik)
+            <i className="fa-solid fa-bolt text-amber-500"></i> Combo Packages (Best Savings)
           </h3>
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             <div className="bg-white rounded-3xl p-8 border-2 border-slate-200 shadow-md hover:border-emerald-500 transition-all flex flex-col justify-between">
               <div>
-                <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4">Paling Populer</div>
+                <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4">Most Popular</div>
                 <h3 className="text-2xl font-extrabold text-slate-900">Rafting + Single ATV Combo</h3>
-                <p className="text-slate-500 text-sm mt-1 mb-6">Masing-masing mengendarai ATV sendiri + perahu rafting.</p>
+                <p className="text-slate-500 text-sm mt-1 mb-6">Each person drives their own ATV + shared rafting boat.</p>
                 <div className="mb-8">
                   <span className="text-4xl font-black text-slate-900">{formatIDR(content.prices['Rafting + Single ATV Combo'])}</span>
-                  <span className="text-slate-500 text-sm font-semibold">/ orang</span>
+                  <span className="text-slate-500 text-sm font-semibold"> / person</span>
                 </div>
               </div>
               <button onClick={() => handleOpenBooking('Rafting + Single ATV Combo')} className="w-full py-4 rounded-xl bg-slate-900 hover:bg-emerald-600 text-white font-extrabold transition-colors text-center shadow-lg">
-                Pilih Kombo Single ATV
+                Choose Single ATV Combo
               </button>
             </div>
 
             <div className="bg-white rounded-3xl p-8 border-2 border-emerald-500 shadow-xl relative flex flex-col justify-between">
-              <div className="absolute -top-4 right-8 bg-gradient-to-r from-emerald-600 to-teal-500 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-md">Terbaik untuk Pasangan</div>
+              <div className="absolute -top-4 right-8 bg-gradient-to-r from-emerald-600 to-teal-500 text-white px-4 py-1 rounded-full text-xs font-black uppercase tracking-wider shadow-md">Best for Couples</div>
               <div>
-                <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4">Paket Berdua</div>
+                <div className="inline-block px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold uppercase tracking-wider mb-4">Pair Package</div>
                 <h3 className="text-2xl font-extrabold text-slate-900">Rafting + Tandem ATV Combo</h3>
-                <p className="text-slate-500 text-sm mt-1 mb-6">2 Orang berbagi 1 ATV (Driver + Penumpang) + Rafting untuk berdua.</p>
+                <p className="text-slate-500 text-sm mt-1 mb-6">2 Guests share 1 ATV (Driver + Passenger) + Rafting for both.</p>
                 <div className="mb-8">
                   <span className="text-4xl font-black text-emerald-600">{formatIDR(content.prices['Rafting + Tandem ATV Combo'])}</span>
-                  <span className="text-slate-500 text-sm font-semibold">/ 2 orang</span>
+                  <span className="text-slate-500 text-sm font-semibold"> / 2 persons</span>
                 </div>
               </div>
               <button onClick={() => handleOpenBooking('Rafting + Tandem ATV Combo')} className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold transition-colors text-center shadow-lg shadow-emerald-600/30">
-                Pilih Kombo Tandem ATV
+                Choose Tandem ATV Combo
               </button>
             </div>
           </div>
@@ -425,35 +425,35 @@ export default function App() {
       <footer className="bg-slate-900 text-white border-t border-slate-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
           <div>
-            <h3 className="text-2xl font-extrabold mb-1">Siap untuk Petualangan Anda di Bali?</h3>
-            <p className="text-slate-400 text-sm">Amankan tanggal pilihan Anda sekarang. Konfirmasi Langsung via WhatsApp!</p>
+            <h3 className="text-2xl font-extrabold mb-1">Ready for Your Bali Adventure?</h3>
+            <p className="text-slate-400 text-sm">Secure your preferred date now. Instant confirmation via WhatsApp!</p>
           </div>
           <div className="flex gap-4">
             {isAdminVisible && (
               <button onClick={() => setIsAdminOpen(true)} className="px-5 py-3 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm border border-slate-700 transition-all">
-                <i className="fa-solid fa-sliders mr-2 text-amber-400"></i> Panel Admin
+                <i className="fa-solid fa-sliders mr-2 text-amber-400"></i> Admin Panel
               </button>
             )}
             <a href="#packages" className="px-6 py-3 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-sm transition-all shadow-lg">
-              Pesan Online Sekarang
+              Book Online Now
             </a>
           </div>
         </div>
       </footer>
 
-      {/* MODAL BOOKING */}
+      {/* BOOKING MODAL */}
       {isBookingOpen && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 relative shadow-2xl">
             <button onClick={() => setIsBookingOpen(false)} className="absolute top-6 right-6 text-slate-400 hover:text-slate-600">
               <i className="fa-solid fa-xmark text-xl"></i>
             </button>
-            <h3 className="text-2xl font-extrabold text-slate-900 mb-1">Formulir Pemesanan</h3>
-            <p className="text-slate-500 text-xs mb-6">Paket Terpilih: <span className="font-bold text-emerald-600">{selectedPackage}</span></p>
+            <h3 className="text-2xl font-extrabold text-slate-900 mb-1">Booking Form</h3>
+            <p className="text-slate-500 text-xs mb-6">Selected Package: <span className="font-bold text-emerald-600">{selectedPackage}</span></p>
 
             <form onSubmit={handleBookingSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Pilihan Paket</label>
+                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Package Choice</label>
                 <select 
                   value={selectedPackage} 
                   onChange={(e) => setSelectedPackage(e.target.value)}
@@ -466,7 +466,7 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Nama Lengkap</label>
+                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name</label>
                 <input 
                   type="text" required placeholder="John Doe" 
                   value={bookingForm.name} 
@@ -477,7 +477,7 @@ export default function App() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Tanggal Tur</label>
+                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Tour Date</label>
                   <input 
                     type="date" required 
                     value={bookingForm.date} 
@@ -486,7 +486,7 @@ export default function App() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Jumlah Peserta/Unit</label>
+                  <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Guests / Units Qty</label>
                   <input 
                     type="number" min="1" required 
                     value={bookingForm.qty} 
@@ -497,9 +497,9 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Lokasi/Hotel Penjemputan</label>
+                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Pickup Hotel / Location</label>
                 <input 
-                  type="text" required placeholder="Nama Hotel atau Area" 
+                  type="text" required placeholder="Hotel Name or Pickup Area" 
                   value={bookingForm.hotel} 
                   onChange={(e) => setBookingForm({...bookingForm, hotel: e.target.value})}
                   className="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
@@ -507,7 +507,7 @@ export default function App() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Nomor WhatsApp</label>
+                <label className="block text-xs font-bold uppercase text-slate-600 mb-1">WhatsApp Number</label>
                 <input 
                   type="tel" required placeholder="+62 812 3456 7890" 
                   value={bookingForm.phone} 
@@ -517,19 +517,19 @@ export default function App() {
               </div>
 
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center font-bold text-sm">
-                <span>Estimasi Total:</span>
+                <span>Estimated Total:</span>
                 <span className="text-lg text-emerald-600">{formatIDR((content.prices[selectedPackage] || 1100000) * bookingForm.qty)}</span>
               </div>
 
               <button type="submit" className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base transition-colors shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2">
-                <i className="fa-brands fa-whatsapp text-lg"></i> Konfirmasi Pesanan via WhatsApp
+                <i className="fa-brands fa-whatsapp text-lg"></i> Confirm Booking via WhatsApp
               </button>
             </form>
           </div>
         </div>
       )}
 
-      {/* MODAL ADMIN CMS */}
+      {/* ADMIN CMS MODAL */}
       {isAdminOpen && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 relative shadow-2xl max-h-[90vh] overflow-y-auto">
@@ -542,48 +542,48 @@ export default function App() {
                 <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4">
                   <i className="fa-solid fa-lock"></i>
                 </div>
-                <h3 className="text-2xl font-extrabold text-slate-900 mb-2">Kelola Konten Web</h3>
-                <p className="text-slate-500 text-sm mb-6">Masukkan PIN Admin untuk membuka panel</p>
+                <h3 className="text-2xl font-extrabold text-slate-900 mb-2">Web Content Management</h3>
+                <p className="text-slate-500 text-sm mb-6">Enter Admin PIN to unlock the panel</p>
                 <div className="max-w-xs mx-auto space-y-4">
                   <input 
-                    type="password" placeholder="Masukkan PIN" 
+                    type="password" placeholder="Enter PIN" 
                     value={adminPin} 
                     onChange={(e) => setAdminPin(e.target.value)}
                     className="w-full px-4 py-3 rounded-xl border border-slate-300 text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
                   <button onClick={handleVerifyPin} className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-lg">
-                    Buka Panel Konten
+                    Unlock Content Panel
                   </button>
-                  {pinError && <p className="text-red-500 text-xs font-bold">PIN Salah! Coba lagi.</p>}
+                  {pinError && <p className="text-red-500 text-xs font-bold">Incorrect PIN! Please try again.</p>}
                 </div>
               </div>
             ) : (
               <form onSubmit={handleSaveContent} className="space-y-5">
                 <div className="border-b border-slate-100 pb-4">
                   <span className="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full">Next.js CMS Active</span>
-                  <h3 className="text-2xl font-extrabold text-slate-900 mt-1">Pengaturan Konten Website</h3>
+                  <h3 className="text-2xl font-extrabold text-slate-900 mt-1">Website Content Settings</h3>
                 </div>
 
-                {/* Pengaturan Keamanan PIN */}
+                {/* PIN Security Settings */}
                 <div className="space-y-3">
-                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-amber-500 pl-2">Keamanan Panel Admin</h4>
+                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-amber-500 pl-2">Admin Panel Security</h4>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">PIN Admin Baru</label>
+                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">New Admin PIN</label>
                     <input 
                       type="text" 
                       value={editForm.adminPin || ''} 
                       onChange={(e) => setEditForm({...editForm, adminPin: e.target.value})}
-                      placeholder="Masukkan PIN Baru (misal: 5678)"
+                      placeholder="Enter new PIN (e.g., 5678)"
                       className="w-full px-4 py-2.5 rounded-xl border border-amber-300 bg-amber-50/50 text-sm font-bold tracking-widest focus:ring-2 focus:ring-amber-500 focus:outline-none"
                     />
-                    <span className="text-[11px] text-slate-400">Gunakan angka/karakter rahasia yang mudah Anda ingat.</span>
+                    <span className="text-[11px] text-slate-400">Set a secret code/PIN that you can easily remember.</span>
                   </div>
                 </div>
 
                 <div className="space-y-3 pt-2">
-                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-emerald-500 pl-2">Informasi Umum</h4>
+                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-emerald-500 pl-2">General Information</h4>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Nomor WhatsApp Penerima</label>
+                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Recipient WhatsApp Number</label>
                     <input 
                       type="text" value={editForm.whatsappNumber} 
                       onChange={(e) => setEditForm({...editForm, whatsappNumber: e.target.value})}
@@ -591,7 +591,7 @@ export default function App() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Teks Pengumuman Atas</label>
+                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Top Announcement Banner Text</label>
                     <input 
                       type="text" value={editForm.announcement} 
                       onChange={(e) => setEditForm({...editForm, announcement: e.target.value})}
@@ -601,9 +601,9 @@ export default function App() {
                 </div>
 
                 <div className="space-y-3 pt-2">
-                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-emerald-500 pl-2">Teks Hero Banner</h4>
+                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-emerald-500 pl-2">Hero Banner Text</h4>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Judul Hero</label>
+                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Hero Title</label>
                     <textarea 
                       rows="2" value={editForm.heroTitle} 
                       onChange={(e) => setEditForm({...editForm, heroTitle: e.target.value})}
@@ -611,7 +611,7 @@ export default function App() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Subjudul Hero</label>
+                    <label className="block text-xs font-bold uppercase text-slate-600 mb-1">Hero Subtitle</label>
                     <textarea 
                       rows="3" value={editForm.heroSubtitle} 
                       onChange={(e) => setEditForm({...editForm, heroSubtitle: e.target.value})}
@@ -621,7 +621,7 @@ export default function App() {
                 </div>
 
                 <div className="space-y-3 pt-2">
-                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-emerald-500 pl-2">Pengaturan Harga (IDR)</h4>
+                  <h4 className="font-bold text-slate-900 text-sm border-l-4 border-emerald-500 pl-2">Pricing Settings (IDR)</h4>
                   <div className="grid sm:grid-cols-2 gap-3">
                     {Object.keys(editForm.prices).map((pkg) => (
                       <div key={pkg}>
@@ -641,16 +641,16 @@ export default function App() {
 
                 {saveSuccess && (
                   <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold rounded-xl flex items-center gap-2">
-                    <i className="fa-solid fa-circle-check"></i> Perubahan berhasil disimpan!
+                    <i className="fa-solid fa-circle-check"></i> Changes saved successfully!
                   </div>
                 )}
 
                 <div className="flex gap-3 pt-4">
                   <button type="button" onClick={() => setIsAdminOpen(false)} className="w-1/2 py-3 rounded-xl bg-slate-100 text-slate-700 font-bold text-sm">
-                    Batal
+                    Cancel
                   </button>
                   <button type="submit" disabled={isSaving} className="w-1/2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg">
-                    {isSaving ? 'Menyimpan...' : 'Simpan Perubahan'}
+                    {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
                 </div>
               </form>
