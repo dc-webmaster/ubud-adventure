@@ -63,12 +63,13 @@ export default function App() {
     }
   }, []);
 
-  // Secret Admin Trigger via URL parameter (?admin=true) or Keyboard Shortcut (Ctrl+Shift+A)
+  // Secret Admin Trigger via URL parameter (?admin=true or ?secret=1234) or Keyboard Shortcut (Ctrl+Shift+A)
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      if (params.get('admin') === 'true') {
+      if (params.get('admin') === 'true' || params.get('secret') === '1234') {
         setIsAdminVisible(true);
+        setIsAdminOpen(true);
       }
 
       const handleKeyDown = (e) => {
