@@ -173,7 +173,9 @@ export default function App() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save shared content');
+        const errorText = await response.text();
+        console.error('Save shared content error:', response.status, errorText);
+        throw new Error(`Failed to save shared content: ${errorText}`);
       }
 
       const updatedContent = await response.json();

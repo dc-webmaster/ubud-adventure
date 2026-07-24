@@ -1,51 +1,63 @@
 import { NextResponse } from 'next/server';
-import { readFileSync, writeFileSync } from 'fs';
-import { join } from 'path';
+import { getSupabaseServer } from '@/lib/supabase-server';
 
-const contentFile = join(process.cwd(), 'data', 'content.json');
+const TABLE_NAME = 'content';
+const ROW_ID = 1;
 
-const readContentFile = () => {
-  try {
-    const file = readFileSync(contentFile, 'utf8');
-    return JSON.parse(file);
-  } catch (error) {
-    return null;
-  }
-};
+const normalizeRow = (row) => {
+  if (!row) return null;
 
-const writeContentFile = (content) => {
-  writeFileSync(contentFile, JSON.stringify(content, null, 2), 'utf8');
+  return {
+    id: row.id,
+    whatsappNumber: row.whatsappnumber || row.whatsappNumber,
+    announcement: row.announcement,
+    heroTitle: row.herotitle || row.heroTitle,
+    heroSubtitle: row.herosubtitle || row.heroSubtitle,
+    prices: row.prices || {}
+  };
 };
 
 export async function GET() {
-  const existing = readContentFile();
-  if (!existing) {
-    return new NextResponse('Content not found', { status: 404 });
+  const supabaseServer = getSupabaseServer();
+  const { data, error } = await supabaseServer
+    .from(TABLE_NAME)
+    .select('*')
+    .eq('id', ROW_ID)
+    .single();
+
+  if (error) {
+    return new NextResponse(error.message, { status: 500 });
   }
 
-  return NextResponse.json(existing);
+  return NextResponse.json(normalizeRow(data));
 }
 
 export async function PUT(request) {
   try {
+    const supabaseServer = getSupabaseServer();
     const data = await request.json();
-    const existing = readContentFile();
-    if (!existing) {
-      return new NextResponse('Content not found', { status: 404 });
-    }
 
-    const updated = {
-      ...existing,
-      ...data,
-      prices: {
-        ...existing.prices,
-        ...(data.prices || {})
-      }
+    const payload = {
+      id: ROW_ID,
+      whatsappnumber: data.whatsappNumber,
+      announcement: data.announcement,
+      herotitle: data.heroTitle,
+      herosubtitle: data.heroSubtitle,
+      prices: data.prices || {}
     };
 
-    writeContentFile(updated);
-    return NextResponse.json(updated);
+    const { data: updated, error } = await supabaseServer
+      .from(TABLE_NAME)
+      .upsert(payload)
+      .select()
+      .single();
+
+    if (error) {
+      return new NextResponse(error.message, { status: 500 });
+    }
+
+    return NextResponse.json(normalizeRow(updated));
   } catch (error) {
-    return new NextResponse('Bad request', { status: 400 });
+    return new NextResponse(error?.message || 'Bad request', { status: 400 });
   }
 }
