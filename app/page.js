@@ -8,6 +8,7 @@ export default function App() {
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [isAdminVisible, setIsAdminVisible] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
   
   // Booking Modal State
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -192,6 +193,34 @@ export default function App() {
   };
 
   const waUrl = `https://wa.me/${content.whatsappNumber}?text=Hello%20Bali%20Adventure!%20I%20have%20an%20inquiry%20regarding%20your%20tour%20packages.`;
+
+  const faqItems = [
+    {
+      question: 'Can I book Rafting or ATV Biking as a single activity?',
+      answer: 'Yes! You can choose to book only Ayung River Rafting or only ATV Quad Biking. Both standalone options still include private hotel transfer, equipment, guides, shower facilities, and buffet lunch.'
+    },
+    {
+      question: 'Is this tour safe for beginners or children?',
+      answer: 'Yes! Both Ayung River Rafting (Grade II-III) and the ATV Quad Bike track are beginner-friendly. Professional instructors lead each activity, and complete safety equipment is provided. Children aged 6 and above can participate (tandem ATV riding with adults).'
+    },
+    {
+      question: 'Which hotel areas are covered for free pickup?',
+      answer: 'We offer private air-conditioned hotel transport from Ubud, Kuta, Legian, Seminyak, Canggu, Sanur, Jimbaran, Nusa Dua, and Denpasar.'
+    },
+    {
+      question: 'What is the difference between Single and Tandem ATV?',
+      answer: (
+        <span>
+          <strong>Single ATV:</strong> 1 Quad bike driven by 1 person.<br />
+          <strong>Tandem ATV:</strong> 1 Quad bike shared by 2 persons (1 rider + 1 passenger). Perfect for couples or parents riding with kids!
+        </span>
+      )
+    },
+    {
+      question: 'How do I pay for my reservation?',
+      answer: 'You can pay in cash (IDR or USD) directly to our driver on the day of the tour, or complete online payment via WhatsApp booking confirmation. No upfront cancellation penalty!'
+    }
+  ];
 
   return (
     <div className="bg-slate-50 text-slate-800 antialiased font-sans selection:bg-emerald-500 selection:text-white min-h-screen">
@@ -710,56 +739,32 @@ export default function App() {
         </div>
 
         <div className="space-y-4">
-          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
-            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
-              Can I book Rafting or ATV Biking as a single activity?
-              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
-            </summary>
-            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
-              Yes! You can choose to book only Ayung River Rafting or only ATV Quad Biking. Both standalone options still include private hotel transfer, equipment, guides, shower facilities, and buffet lunch.
-            </p>
-          </details>
+          {faqItems.map((item, index) => {
+            const isOpen = openFaq === index;
 
-          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
-            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
-              Is this tour safe for beginners or children?
-              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
-            </summary>
-            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
-              Yes! Both Ayung River Rafting (Grade II-III) and the ATV Quad Bike track are beginner-friendly. Professional instructors lead each activity, and complete safety equipment is provided. Children aged 6 and above can participate (tandem ATV riding with adults).
-            </p>
-          </details>
-
-          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
-            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
-              Which hotel areas are covered for free pickup?
-              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
-            </summary>
-            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
-              We offer private air-conditioned hotel transport from Ubud, Kuta, Legian, Seminyak, Canggu, Sanur, Jimbaran, Nusa Dua, and Denpasar.
-            </p>
-          </details>
-
-          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
-            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
-              What is the difference between Single and Tandem ATV?
-              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
-            </summary>
-            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
-              <strong>Single ATV:</strong> 1 Quad bike driven by 1 person.<br />
-              <strong>Tandem ATV:</strong> 1 Quad bike shared by 2 persons (1 rider + 1 passenger). Perfect for couples or parents riding with kids!
-            </p>
-          </details>
-
-          <details className="bg-white p-6 rounded-2xl border border-slate-200 group">
-            <summary className="font-bold text-slate-900 cursor-pointer list-none flex justify-between items-center">
-              How do I pay for my reservation?
-              <span className="transition group-open:rotate-180"><i className="fa-solid fa-chevron-down text-emerald-600"></i></span>
-            </summary>
-            <p className="text-slate-600 text-sm mt-4 leading-relaxed">
-              You can pay in cash (IDR or USD) directly to our driver on the day of the tour, or complete online payment via WhatsApp booking confirmation. No upfront cancellation penalty!
-            </p>
-          </details>
+            return (
+              <div key={item.question} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(isOpen ? null : index)}
+                  className="w-full p-6 text-left flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-50 transition-colors"
+                  aria-expanded={isOpen}
+                >
+                  <span className="font-bold text-slate-900">{item.question}</span>
+                  <span className={`transition-transform duration-300 ${isOpen ? 'rotate-180' : 'rotate-0'}`}>
+                    <i className="fa-solid fa-chevron-down text-emerald-600"></i>
+                  </span>
+                </button>
+                <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'}`}>
+                  <div className="overflow-hidden">
+                    <div className="px-6 pb-6 text-slate-600 text-sm leading-relaxed">
+                      {item.answer}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -891,9 +896,15 @@ export default function App() {
                     type="password" placeholder="Enter PIN" 
                     value={adminPin} 
                     onChange={(e) => setAdminPin(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        handleVerifyPin();
+                      }
+                    }}
                     className="w-full px-4 py-3 rounded-xl border border-slate-300 text-center text-lg font-bold tracking-widest focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                   />
-                  <button onClick={handleVerifyPin} className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-lg cursor-pointer">
+                  <button type="button" onClick={handleVerifyPin} className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm transition-colors shadow-lg cursor-pointer">
                     Unlock Content Panel
                   </button>
                   {pinError && <p className="text-red-500 text-xs font-bold">Incorrect PIN! Please try again.</p>}
@@ -901,6 +912,7 @@ export default function App() {
               </div>
             ) : (
               <form onSubmit={handleSaveContent} className="space-y-5">
+                {/*
                 <div className="border-b border-slate-100 pb-4">
                   <span className="bg-emerald-100 text-emerald-700 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full">Next.js CMS Active</span>
                   <h3 className="text-2xl font-extrabold text-slate-900 mt-1">Website Content Settings</h3>
@@ -909,6 +921,11 @@ export default function App() {
                 <div className="space-y-3">
                   <h4 className="font-bold text-slate-900 text-sm border-l-4 border-amber-500 pl-2">Admin Panel Security</h4>
                   <p className="text-sm text-slate-500">Admin PIN is verified on the server only and is not shipped to browser source or Inspect Element.</p>
+                </div>
+                */}
+
+                <div className="border-b border-slate-100 pb-4">
+                  <h3 className="text-2xl font-extrabold text-slate-900 mt-1">Website Content Settings</h3>
                 </div>
 
                 <div className="space-y-3 pt-2">
