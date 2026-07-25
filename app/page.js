@@ -242,7 +242,12 @@ export default function App() {
       </nav>
 
       {/* HERO SECTION */}
-      <header className="relative bg-slate-900 text-white py-24 md:py-36 px-4 sm:px-6 lg:px-8 overflow-hidden bg-cover bg-center" style={{ backgroundImage: "linear-gradient(rgba(15, 23, 42, 0.65), rgba(15, 23, 42, 0.75)), url('https://images.unsplash.com/photo-1544644181-1484b3fdfc62?q=80&w=1920&auto=format&fit=crop')" }}>
+      <header className="hero-header relative isolate overflow-hidden bg-slate-900 text-white py-24 md:py-36 px-4 sm:px-6 lg:px-8">
+        <div className="hero-slideshow absolute inset-0" aria-hidden="true">
+          <div className="hero-slide hero-slide-1" />
+          <div className="hero-slide hero-slide-3" />
+        </div>
+        <div className="absolute inset-0 bg-slate-900/70" />
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-emerald-300 border border-white/20 text-xs md:text-sm font-semibold uppercase tracking-wider mb-6">
             <i className="fa-solid fa-star text-amber-400"></i> #1 Outdoor Adventure Operator in Ubud
@@ -348,7 +353,7 @@ export default function App() {
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-4">
-              <img src="https://images.unsplash.com/photo-1530866495561-507c9faab2ed?q=80&w=800&auto=format&fit=crop" alt="Ayung River Rafting" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
+              <img src="../images/rafting.jpg" alt="Ayung River Rafting" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
               <div className="bg-emerald-600 text-white p-6 rounded-2xl shadow-lg">
                 <div className="text-3xl font-extrabold mb-1">10+ km</div>
                 <div className="text-emerald-100 text-sm font-medium">River Trail & Scenic Cliff Carvings</div>
@@ -359,7 +364,7 @@ export default function App() {
                 <div className="text-3xl font-extrabold mb-1">2 Hours</div>
                 <div className="text-slate-300 text-sm font-medium">Off-Road ATV Track with Caves & Mud</div>
               </div>
-              <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?q=80&w=800&auto=format&fit=crop" alt="Ubud ATV Quad Biking" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
+              <img src="../images/atv.jpg" alt="Ubud ATV Quad Biking" className="rounded-2xl object-cover h-64 w-full shadow-lg" />
             </div>
           </div>
         </div>

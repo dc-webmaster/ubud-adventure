@@ -24,3 +24,66 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.hero-header {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-slideshow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-slide {
+  position: absolute;
+  inset: -12%;
+  background-size: cover;
+  background-position: top center;
+  transform: scale(1.15);
+  opacity: 0;
+  filter: saturate(1.1) contrast(1.12) brightness(0.82);
+  animation: heroZoom 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.hero-slide-1 {
+  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)), url('/images/atv2.jpg');
+  animation-delay: 0s;
+}
+
+.hero-slide-2 {
+  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)), url('/images/atv1.jpg');
+  animation-delay: 2s;
+}
+
+.hero-slide-3 {
+  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)), url('/images/rafting.jpg');
+  animation-delay: 4s;
+}
+
+.hero-slide-4 {
+  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)), url('/images/atv.jpg');
+  animation-delay: 6s;
+}
+
+@keyframes heroZoom {
+  0% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+  8% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 1;
+    transform: scale(1.03);
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.15);
+  }
+}
