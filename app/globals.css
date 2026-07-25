@@ -42,13 +42,13 @@ body {
   background-size: cover;
   background-position: top center;
   transform: scale(1.15);
-  opacity: 0;
+  opacity: 0.5;
   filter: saturate(1.1) contrast(1.12) brightness(0.82);
   animation: heroZoom 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 .hero-slide-1 {
-  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)), url('/images/atv2.jpg');
+  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.3)), url('/images/atv2.jpg');
   animation-delay: 0s;
 }
 
@@ -58,7 +58,7 @@ body {
 }
 
 .hero-slide-3 {
-  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.7)), url('/images/rafting.jpg');
+  background-image: linear-gradient(rgba(2, 6, 23, 0.55), rgba(2, 6, 23, 0.3)), url('/images/rafting.jpg');
   animation-delay: 4s;
 }
 

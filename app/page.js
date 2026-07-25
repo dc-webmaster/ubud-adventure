@@ -7,6 +7,7 @@ export default function App() {
   // Web content state management
   const [content, setContent] = useState(DEFAULT_CONTENT);
   const [isAdminVisible, setIsAdminVisible] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   // Booking Modal State
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -204,7 +205,7 @@ export default function App() {
       {/* NAVBAR */}
       <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex items-center gap-3 cursor-pointer">
+          <a href="#" onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); setIsMobileMenuOpen(false); }} className="flex items-center gap-3 cursor-pointer">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-emerald-500/20">
               <i className="fa-solid fa-compass"></i>
             </div>
@@ -226,7 +227,7 @@ export default function App() {
             {isAdminVisible && (
               <button 
                 onClick={() => setIsAdminOpen(true)}
-                className="inline-flex items-center justify-center px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-amber-100 hover:bg-amber-200 transition-all border border-amber-300 cursor-pointer"
+                className="hidden sm:inline-flex items-center justify-center px-3 py-2 rounded-xl text-xs font-bold text-slate-700 bg-amber-100 hover:bg-amber-200 transition-all border border-amber-300 cursor-pointer"
               >
                 <i className="fa-solid fa-gear mr-1.5 text-amber-700"></i> Admin CMS
               </button>
@@ -237,8 +238,36 @@ export default function App() {
             <a href={waUrl} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 hover:bg-emerald-200 transition-colors cursor-pointer">
               <i className="fa-brands fa-whatsapp text-lg"></i>
             </a>
+            <button
+              type="button"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              className="md:hidden inline-flex items-center justify-center w-10 h-10 rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm"
+              aria-label="Toggle navigation menu"
+            >
+              <i className={`fa-solid ${isMobileMenuOpen ? 'fa-xmark' : 'fa-bars'} text-lg`}></i>
+            </button>
           </div>
         </div>
+
+        {isMobileMenuOpen && (
+          <div className="md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-md px-4 py-4 shadow-lg">
+            <div className="max-w-7xl mx-auto flex flex-col gap-3 text-sm font-semibold text-slate-700">
+              <a href="#overview" onClick={(e) => { scrollToSection(e, 'overview'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">Overview</a>
+              <a href="#highlights" onClick={(e) => { scrollToSection(e, 'highlights'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">Highlights</a>
+              <a href="#packages" onClick={(e) => { scrollToSection(e, 'packages'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">Packages & Pricing</a>
+              <a href="#itinerary" onClick={(e) => { scrollToSection(e, 'itinerary'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">Itinerary</a>
+              <a href="#faq" onClick={(e) => { scrollToSection(e, 'faq'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">FAQ</a>
+              {isAdminVisible && (
+                <button
+                  onClick={() => { setIsAdminOpen(true); setIsMobileMenuOpen(false); }}
+                  className="rounded-xl px-3 py-2 text-left text-amber-700 bg-amber-50 border border-amber-200"
+                >
+                  Admin CMS
+                </button>
+              )}
+            </div>
+          </div>
+        )}
       </nav>
 
       {/* HERO SECTION */}
