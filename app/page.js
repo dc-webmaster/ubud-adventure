@@ -13,6 +13,7 @@ export default function App() {
   // Booking Modal State
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('Rafting + Single ATV Combo');
+  const [selectedCurrency, setSelectedCurrency] = useState('IDR');
   const [bookingForm, setBookingForm] = useState({
     name: '',
     date: '',
@@ -20,6 +21,26 @@ export default function App() {
     hotel: '',
     phone: ''
   });
+
+  const currencyRates = {
+    IDR: 1,
+    USD: 1 / 15000,
+    AUD: 1 / 10000
+  };
+
+  const formatCurrency = (amount, currency = selectedCurrency) => {
+    const value = (amount || 0) * (currency === 'IDR' ? 1 : currencyRates[currency] || 1);
+
+    if (currency === 'USD') {
+      return '$' + value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    if (currency === 'AUD') {
+      return 'A$' + value.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    return 'IDR ' + Math.round(value).toLocaleString('id-ID');
+  };
 
   // Admin CMS Modal State
   const [isAdminOpen, setIsAdminOpen] = useState(false);
@@ -113,7 +134,7 @@ export default function App() {
   const handleBookingSubmit = (e) => {
     e.preventDefault();
     const unitPrice = content.prices[selectedPackage] || 1100000;
-    const totalPrice = (unitPrice * bookingForm.qty).toLocaleString('id-ID');
+    const estimatedTotal = formatCurrency(unitPrice * bookingForm.qty, selectedCurrency);
 
     const message = `Hello Bali Adventure! I would like to book a package:%0A%0A` +
       `*Package:* ${selectedPackage}%0A` +
@@ -122,7 +143,7 @@ export default function App() {
       `*Quantity:* ${bookingForm.qty}%0A` +
       `*Hotel Pickup:* ${bookingForm.hotel}%0A` +
       `*Guest WhatsApp:* ${bookingForm.phone}%0A` +
-      `*Estimated Total:* IDR ${totalPrice}%0A%0A` +
+      `*Estimated Total:* ${estimatedTotal}%0A%0A` +
       `Please confirm availability. Thank you!`;
 
     window.open(`https://wa.me/${content.whatsappNumber}?text=${message}`, '_blank');
@@ -252,7 +273,17 @@ export default function App() {
             <a href="#faq" onClick={(e) => scrollToSection(e, 'faq')} className="hover:text-emerald-600 transition-colors cursor-pointer">FAQ</a>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-3">
+            <select
+              value={selectedCurrency}
+              onChange={(e) => setSelectedCurrency(e.target.value)}
+              className="px-3 py-2 rounded-2xl border border-slate-200 text-sm bg-white text-slate-800 cursor-pointer"
+              aria-label="Select currency"
+            >
+              <option value="IDR">IDR</option>
+              <option value="USD">USD</option>
+              <option value="AUD">AUD</option>
+            </select>
             {isAdminVisible && (
               <button 
                 onClick={() => setIsAdminOpen(true)}
@@ -286,6 +317,18 @@ export default function App() {
               <a href="#packages" onClick={(e) => { scrollToSection(e, 'packages'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">Packages & Pricing</a>
               <a href="#itinerary" onClick={(e) => { scrollToSection(e, 'itinerary'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">Itinerary</a>
               <a href="#faq" onClick={(e) => { scrollToSection(e, 'faq'); setIsMobileMenuOpen(false); }} className="rounded-xl px-3 py-2 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">FAQ</a>
+              <div className="rounded-xl px-3 py-2 bg-slate-50 border border-slate-200">
+                <label className="sr-only">Currency selector</label>
+                <select
+                  value={selectedCurrency}
+                  onChange={(e) => setSelectedCurrency(e.target.value)}
+                  className="w-full bg-transparent text-slate-700 text-sm font-semibold cursor-pointer"
+                >
+                  <option value="IDR">IDR</option>
+                  <option value="USD">USD</option>
+                  <option value="AUD">AUD</option>
+                </select>
+              </div>
               {isAdminVisible && (
                 <button
                   onClick={() => { setIsAdminOpen(true); setIsMobileMenuOpen(false); }}
@@ -504,7 +547,7 @@ export default function App() {
                 <h4 className="text-xl font-extrabold text-slate-900">Ayung River Rafting Only</h4>
                 <p className="text-slate-500 text-xs mt-1 mb-4">2 Hours white water rafting adventure down the Ayung River.</p>
                 <div className="mb-6">
-                  <span className="text-3xl font-black text-slate-900">{formatIDR(content.prices['Ayung River Rafting Only'])}</span>
+                  <span className="text-3xl font-black text-slate-900">{formatCurrency(content.prices['Ayung River Rafting Only'])}</span>
                   <span className="text-slate-500 text-xs font-semibold"> / person</span>
                 </div>
               </div>
@@ -520,7 +563,7 @@ export default function App() {
                 <h4 className="text-xl font-extrabold text-slate-900">Single ATV Ride Only</h4>
                 <p className="text-slate-500 text-xs mt-1 mb-4">1 Rider driving 1 Quad Bike through jungle tracks & caves.</p>
                 <div className="mb-6">
-                  <span className="text-3xl font-black text-slate-900">{formatIDR(content.prices['Single ATV Ride Only'])}</span>
+                  <span className="text-3xl font-black text-slate-900">{formatCurrency(content.prices['Single ATV Ride Only'])}</span>
                   <span className="text-slate-500 text-xs font-semibold"> / person</span>
                 </div>
               </div>
@@ -536,7 +579,7 @@ export default function App() {
                 <h4 className="text-xl font-extrabold text-slate-900">Tandem ATV Ride Only</h4>
                 <p className="text-slate-500 text-xs mt-1 mb-4">2 Guests riding together on 1 Quad Bike.</p>
                 <div className="mb-6">
-                  <span className="text-3xl font-black text-slate-900">{formatIDR(content.prices['Tandem ATV Ride Only'])}</span>
+                  <span className="text-3xl font-black text-slate-900">{formatCurrency(content.prices['Tandem ATV Ride Only'])}</span>
                   <span className="text-slate-500 text-xs font-semibold"> / 2 persons</span>
                 </div>
               </div>
@@ -559,7 +602,7 @@ export default function App() {
                 <h3 className="text-2xl font-extrabold text-slate-900">Rafting + Single ATV Combo</h3>
                 <p className="text-slate-500 text-sm mt-1 mb-6">Each person drives their own ATV + shared rafting boat.</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-black text-slate-900">{formatIDR(content.prices['Rafting + Single ATV Combo'])}</span>
+                  <span className="text-4xl font-black text-slate-900">{formatCurrency(content.prices['Rafting + Single ATV Combo'])}</span>
                   <span className="text-slate-500 text-sm font-semibold"> / person</span>
                 </div>
               </div>
@@ -575,7 +618,7 @@ export default function App() {
                 <h3 className="text-2xl font-extrabold text-slate-900">Rafting + Tandem ATV Combo</h3>
                 <p className="text-slate-500 text-sm mt-1 mb-6">2 Guests share 1 ATV (Driver + Passenger) + Rafting for both.</p>
                 <div className="mb-8">
-                  <span className="text-4xl font-black text-emerald-600">{formatIDR(content.prices['Rafting + Tandem ATV Combo'])}</span>
+                  <span className="text-4xl font-black text-emerald-600">{formatCurrency(content.prices['Rafting + Tandem ATV Combo'])}</span>
                   <span className="text-slate-500 text-sm font-semibold"> / 2 persons</span>
                 </div>
               </div>
@@ -865,7 +908,7 @@ export default function App() {
 
               <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex justify-between items-center font-bold text-sm">
                 <span>Estimated Total:</span>
-                <span className="text-lg text-emerald-600">{formatIDR((content.prices[selectedPackage] || 1100000) * bookingForm.qty)}</span>
+                <span className="text-lg text-emerald-600">{formatCurrency((content.prices[selectedPackage] || 1100000) * bookingForm.qty)}</span>
               </div>
 
               <button type="submit" className="w-full py-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-base transition-colors shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 cursor-pointer">
